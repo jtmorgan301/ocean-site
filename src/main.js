@@ -24,7 +24,13 @@ renderer.setSize(window.innerWidth, window.innerHeight);
 document.body.appendChild(renderer.domElement);
 createTooltip();
 
+let mouseX = 0;
+let mouseY = 0;
 
+window.addEventListener("mousemove", (event) => {
+  mouseX = event.clientX;
+  mouseY = event.clientY;
+});
 
 // Load models
 let diver;
@@ -44,7 +50,7 @@ loadDiver(scene).then((result) => {
 loadFish(scene).then((fishArray) => {
 
   const checkIntersections = createRaycaster(camera, fishArray);
-
+  //Glow Effect Variables
   let hoveredFish = null;
 
 // Render Loop
@@ -55,18 +61,19 @@ function animate() {
   if (mixer) mixer.update(delta);
 
   const intersects = checkIntersections();
-
+// Tooltip Logic
   if (intersects.length > 0) {
     const fishMesh = intersects[0].object;
-    showTooltip(fishMesh.userData.description);
+    showTooltip(fishMesh.userData.description, mouseX, mouseY);
   } else {
     hideTooltip();
   }
+  //Fish Glow Effect
     if (intersects.length > 0) {
     const fishMesh = intersects[0].object;
 
-    showTooltip(fishMesh.userData.description);
-//Fish Glow Effect
+    showTooltip(fishMesh.userData.description, mouseX, mouseY);
+
     if (hoveredFish !== fishMesh) {
       if (hoveredFish) {
         hoveredFish.material.emissive.set(0x000000);

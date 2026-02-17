@@ -1,29 +1,30 @@
-let tooltip;
+let tooltipElement = null;
 
 export function createTooltip() {
-  tooltip = document.createElement("div");
-  tooltip.style.position = "absolute";
-  tooltip.style.bottom = "40px";
-  tooltip.style.left = "40px";
-  tooltip.style.padding = "12px 18px";
-  tooltip.style.background = "rgba(0, 0, 0, 0.7)";
-  tooltip.style.color = "white";
-  tooltip.style.borderRadius = "12px";
-  tooltip.style.fontFamily = "sans-serif";
-  tooltip.style.fontSize = "14px";
-  tooltip.style.display = "none";
-  tooltip.style.backdropFilter = "blur(6px)";
-  document.body.appendChild(tooltip);
+  tooltipElement = document.createElement("div");
+  tooltipElement.id = "tooltip";
+  tooltipElement.style.position = "absolute";
+  tooltipElement.style.display = "none";
+  tooltipElement.style.background = "rgba(0,0,0,0.7)";
+  tooltipElement.style.color = "white";
+  tooltipElement.style.padding = "8px";
+  tooltipElement.style.borderRadius = "6px";
+  tooltipElement.style.pointerEvents = "none";
+
+  document.body.appendChild(tooltipElement);
 }
 
-export function showTooltip(text) {
-  if (!tooltip) return;
-  tooltip.innerText = text;
-  tooltip.style.display = "block";
-  
+export function showTooltip(text, x, y) {
+  if (!tooltipElement) return;
+
+  tooltipElement.innerText = text;
+  tooltipElement.style.left = x + 15 + "px";
+  tooltipElement.style.top = y + 15 + "px";
+  tooltipElement.style.display = "block";
 }
 
 export function hideTooltip() {
-  if (!tooltip) return;
-  tooltip.style.display = "none";
+  if (!tooltipElement) return;
+
+  tooltipElement.style.display = "none";
 }
