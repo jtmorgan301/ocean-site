@@ -1,5 +1,4 @@
 import * as THREE from "three";
-
 import { createScene } from "./scene/setupScene.js";
 import { createCamera } from "./scene/camera.js";
 import { createRenderer } from "./scene/renderer.js";
@@ -10,6 +9,8 @@ import { loadDiver } from "./models/diver.js";
 import { loadFish } from "./models/fish.js";
 import { setupMouse } from "./interaction/mouse.js";
 
+import { createRaycaster } from "./interaction/raycaster.js";
+import { showTooltip, hideTooltip, createTooltip } from "./ui/tooltip.js";
 
 const scene = createScene();
 const camera = createCamera();
@@ -18,6 +19,12 @@ const renderer = createRenderer();
 addLights(scene);
 
 const ocean = createOcean(scene);
+
+renderer.setSize(window.innerWidth, window.innerHeight);
+document.body.appendChild(renderer.domElement);
+createTooltip();
+
+
 
 // Load models
 let diver;
@@ -32,9 +39,13 @@ loadDiver(scene).then((result) => {
   setupMouse(diver);
 });
 
-loadFish(scene).then((fish) => {
-  fishArray = fish;
-});
+
+// 🔥 WAIT for fish to load
+loadFish(scene).then((fishArray) => {
+
+  const checkIntersections = createRaycaster(camera, fishArray);
+
+  let hoveredFish = null;
 
 // Render Loop
 function animate() {
@@ -43,7 +54,38 @@ function animate() {
   const delta = clock.getDelta();
   if (mixer) mixer.update(delta);
 
+  const intersects = checkIntersections();
+
+  if (intersects.length > 0) {
+    const fishMesh = intersects[0].object;
+    showTooltip(fishMesh.userData.description);
+  } else {
+    hideTooltip();
+  }
+    if (intersects.length > 0) {
+    const fishMesh = intersects[0].object;
+
+    showTooltip(fishMesh.userData.description);
+//Fish Glow Effect
+    if (hoveredFish !== fishMesh) {
+      if (hoveredFish) {
+        hoveredFish.material.emissive.set(0x000000);
+      }
+
+      hoveredFish = fishMesh;
+      hoveredFish.material.emissive.set(0x2266ff);
+    }
+  } else {
+    hideTooltip();
+
+    if (hoveredFish) {
+      hoveredFish.material.emissive.set(0x000000);
+      hoveredFish = null;
+    }
+  }
+
   renderer.render(scene, camera);
 }
 
 animate();
+})

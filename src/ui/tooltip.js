@@ -1,18 +1,29 @@
+let tooltip;
+
+export function createTooltip() {
+  tooltip = document.createElement("div");
+  tooltip.style.position = "absolute";
+  tooltip.style.bottom = "40px";
+  tooltip.style.left = "40px";
+  tooltip.style.padding = "12px 18px";
+  tooltip.style.background = "rgba(0, 0, 0, 0.7)";
+  tooltip.style.color = "white";
+  tooltip.style.borderRadius = "12px";
+  tooltip.style.fontFamily = "sans-serif";
+  tooltip.style.fontSize = "14px";
+  tooltip.style.display = "none";
+  tooltip.style.backdropFilter = "blur(6px)";
+  document.body.appendChild(tooltip);
+}
+
 export function showTooltip(text) {
-  let box = document.getElementById("infoBox");
+  if (!tooltip) return;
+  tooltip.innerText = text;
+  tooltip.style.display = "block";
+  
+}
 
-  if (!box) {
-    box = document.createElement("div");
-    box.id = "infoBox";
-    document.body.appendChild(box);
-  }
-
-  box.innerText = text;
-  box.style.position = "absolute";
-  box.style.bottom = "20px";
-  box.style.left = "20px";
-  box.style.background = "rgba(0, 0, 0, 0.7)";
-  box.style.color = "white";
-  box.style.padding = "10px";
-  box.style.borderRadius = "10px";
+export function hideTooltip() {
+  if (!tooltip) return;
+  tooltip.style.display = "none";
 }

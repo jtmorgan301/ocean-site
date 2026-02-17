@@ -1,16 +1,21 @@
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 
-export async function loadFish(scene) {
+export function loadFish(scene) {
   const loader = new GLTFLoader();
-  const fishArray = [];
 
   return new Promise((resolve) => {
-    loader.load('/models/clownfish.glb', (gltf) => {
+    loader.load("/models/clownfish.glb", (gltf) => {
       const fish = gltf.scene;
-      fish.position.set(2, 0, -3);
-      fish.userData.description = "Clownfish: Found in coral reefs.";
+      const fishArray = [];
+
+      fish.traverse((child) => {
+        if (child.isMesh) {
+          child.userData.description = "Clownfish: Reef species.";
+          fishArray.push(child);
+        }
+      });
+
       scene.add(fish);
-      fishArray.push(fish);
       resolve(fishArray);
     });
   });
