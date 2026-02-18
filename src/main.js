@@ -3,7 +3,7 @@ import { createScene } from "./scene/setupScene.js";
 import { createCamera } from "./scene/camera.js";
 import { createRenderer } from "./scene/renderer.js";
 import { addLights } from "./scene/lights.js";
-
+import { createParticles } from "./environment/particles.js";
 import { createOcean } from "./environment/ocean.js";
 import { loadDiver } from "./models/diver.js";
 import { loadFish } from "./models/fish.js";
@@ -15,6 +15,7 @@ import { showTooltip, hideTooltip, createTooltip } from "./ui/tooltip.js";
 const scene = createScene();
 const camera = createCamera();
 const renderer = createRenderer();
+const particles = createParticles(scene);
 
 addLights(scene);
 
@@ -90,6 +91,8 @@ function animate() {
       hoveredFish = null;
     }
   }
+  particles.rotation.y += 0.0003;
+  particles.rotation.x += 0.0001;
 
   renderer.render(scene, camera);
 }
