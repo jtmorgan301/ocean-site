@@ -10,10 +10,15 @@ export function loadFish(scene) {
 
       fish.traverse((child) => {
         if (child.isMesh) {
-          child.userData.description = "Clownfish: Reef species.";
+          child.userData.description = "My name is Nemo and i am a clownfish!";
           fishArray.push(child);
         }
       });
+      fish.rotation.y = Math.PI / 2;
+
+      fish.position.x = 5;
+      fish.position.z -= 7;
+      fish.position.y -= 1.5;
 
       scene.add(fish);
       resolve(fishArray);

@@ -7,7 +7,7 @@ export function loadDiver(scene) {
   return new Promise((resolve) => {
     loader.load("/models/diver.glb", (gltf) => {
       const diver = gltf.scene;
-      diver.position.set(0, 2, 0);
+      diver.position.set(0, 2, -1);
       scene.add(diver);
 
       // 🔥 Check animations
