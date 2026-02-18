@@ -4,11 +4,10 @@ import { createCamera } from "./scene/camera.js";
 import { createRenderer } from "./scene/renderer.js";
 import { addLights } from "./scene/lights.js";
 import { createParticles } from "./environment/particles.js";
-import { createOcean } from "./environment/ocean.js";
 import { loadDiver } from "./models/diver.js";
 import { loadFish } from "./models/fish.js";
 import { setupMouse } from "./interaction/mouse.js";
-
+import { createLightRays } from "./environment/lightRays.js";
 import { createRaycaster } from "./interaction/raycaster.js";
 import { showTooltip, hideTooltip, createTooltip } from "./ui/tooltip.js";
 
@@ -16,10 +15,10 @@ const scene = createScene();
 const camera = createCamera();
 const renderer = createRenderer();
 const particles = createParticles(scene);
+const raysGroup = createLightRays(scene);
+
 
 addLights(scene);
-
-const ocean = createOcean(scene);
 
 renderer.setSize(window.innerWidth, window.innerHeight);
 document.body.appendChild(renderer.domElement);
@@ -60,7 +59,7 @@ function animate() {
 
   const delta = clock.getDelta();
   if (mixer) mixer.update(delta);
-
+  
   const intersects = checkIntersections();
 // Tooltip Logic
   if (intersects.length > 0) {
@@ -93,6 +92,11 @@ function animate() {
   }
   particles.rotation.y += 0.0003;
   particles.rotation.x += 0.0001;
+
+  raysGroup.children.forEach((ray, i) => {
+  ray.position.x += Math.sin(Date.now() * 0.0002 + i) * 0.002;
+  ray.rotation.z = Math.sin(Date.now() * 0.0001 + i) * 0.02;
+});
 
   renderer.render(scene, camera);
 }
