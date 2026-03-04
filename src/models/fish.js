@@ -1,3 +1,4 @@
+import * as THREE from "three";
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 
 export function loadFish(scene) {
@@ -6,6 +7,7 @@ export function loadFish(scene) {
   return new Promise((resolve) => {
     loader.load("/models/clownfish.glb", (gltf) => {
       const fish = gltf.scene;
+      scene.add(fish);
       const fishArray = [];
 
       fish.traverse((child) => {
@@ -21,7 +23,11 @@ export function loadFish(scene) {
       fish.position.y -= 1.5;
 
       scene.add(fish);
-      resolve(fishArray);
+      resolve({
+      fish,
+      fishArray,
+      animations: gltf.animations
+    });
     });
   });
 }

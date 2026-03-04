@@ -17,7 +17,6 @@ const renderer = createRenderer();
 const particles = createParticles(scene);
 const raysGroup = createLightRays(scene);
 
-
 addLights(scene);
 
 renderer.setSize(window.innerWidth, window.innerHeight);
@@ -26,6 +25,7 @@ createTooltip();
 
 let mouseX = 0;
 let mouseY = 0;
+let checkIntersections = () => [];
 
 window.addEventListener("mousemove", (event) => {
   mouseX = event.clientX;
@@ -35,21 +35,36 @@ window.addEventListener("mousemove", (event) => {
 // Load models
 let diver;
 let fishArray = [];
-let mixer;
-const clock = new THREE.Clock();
+let mixers = [];
+const clock = new THREE.Timer();
+clock.connect(document);
 
 loadDiver(scene).then((result) => {
   diver = result.diver;
-  mixer = result.mixer;
+  mixers.push(result.mixer);
 
   setupMouse(diver);
 });
 
 
-// 🔥 WAIT for fish to load
-loadFish(scene).then((fishArray) => {
+//WAIT for fish to load
 
-  const checkIntersections = createRaycaster(camera, fishArray);
+loadFish(scene).then((result) => {
+
+  const fish = result.fish;
+  const animations = result.animations;
+
+  // IMPORTANT: assign to outer array
+  fishArray = result.fishArray;
+
+  const mixer = new THREE.AnimationMixer(fish);
+  mixer.clipAction(animations[0]).play();
+
+  mixers.push(mixer);
+
+  checkIntersections = createRaycaster(camera, fishArray);
+});
+  
   //Glow Effect Variables
   let hoveredFish = null;
 
@@ -57,10 +72,11 @@ loadFish(scene).then((fishArray) => {
 function animate() {
   requestAnimationFrame(animate);
 
+  clock.update();
   const delta = clock.getDelta();
-  if (mixer) mixer.update(delta);
+  mixers.forEach(mixer => mixer.update(delta));
   
-  const intersects = checkIntersections();
+  const intersects = checkIntersections() ? checkIntersections() : [];
 // Tooltip Logic
   if (intersects.length > 0) {
     const fishMesh = intersects[0].object;
@@ -102,4 +118,4 @@ function animate() {
 }
 
 animate();
-})
+
