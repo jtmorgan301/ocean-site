@@ -3,13 +3,14 @@ import * as THREE from "three";
 
 export function loadDiver(scene) {
   const loader = new GLTFLoader();
-
+  
   return new Promise((resolve) => {
     loader.load("/models/diver.glb", (gltf) => {
       const diver = gltf.scene;
       diver.position.set(0, 2, -1);
       scene.add(diver);
-
+      console.log(gltf.scene);
+      
       // 🔥 Check animations
       if (gltf.animations.length > 0) {
         const mixer = new THREE.AnimationMixer(diver);
@@ -23,3 +24,4 @@ export function loadDiver(scene) {
     });
   });
 }
+

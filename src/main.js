@@ -19,9 +19,14 @@ const raysGroup = createLightRays(scene);
 
 addLights(scene);
 
+renderer.outputColorSpace = THREE.SRGBColorSpace;
+renderer.toneMapping = THREE.ACESFilmicToneMapping;
+renderer.toneMappingExposure = 1;
+
 renderer.setSize(window.innerWidth, window.innerHeight);
 document.body.appendChild(renderer.domElement);
 createTooltip();
+
 
 let mouseX = 0;
 let mouseY = 0;
