@@ -18,9 +18,7 @@ export function loadFish(scene) {
       });
       fish.rotation.y = Math.PI / 2;
 
-      fish.position.x = 5;
-      fish.position.z -= 7;
-      fish.position.y -= 1.5;
+      fish.position.set(2, -2, -7);   // clownfish slightly deeper
 
       scene.add(fish);
       resolve({

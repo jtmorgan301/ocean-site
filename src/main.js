@@ -10,6 +10,7 @@ import { setupMouse } from "./interaction/mouse.js";
 import { createLightRays } from "./environment/lightRays.js";
 import { createRaycaster } from "./interaction/raycaster.js";
 import { showTooltip, hideTooltip, createTooltip } from "./ui/tooltip.js";
+import { loadShark } from "./models/shark.js";
 
 const scene = createScene();
 const camera = createCamera();
@@ -35,6 +36,14 @@ let checkIntersections = () => [];
 window.addEventListener("mousemove", (event) => {
   mouseX = event.clientX;
   mouseY = event.clientY;
+});
+
+// Scroll-based movement variables
+let scrollY = 0;
+
+window.addEventListener("scroll", () => {
+  scrollY = window.scrollY;
+  console.log(scrollY);
 });
 
 // Load models
@@ -70,12 +79,35 @@ loadFish(scene).then((result) => {
   checkIntersections = createRaycaster(camera, fishArray);
 });
   
+loadShark(scene).then((result) => {
+
+  const shark = result.shark;
+  const animations = result.animations;
+
+  fishArray = fishArray.concat(result.sharkArray);
+
+  if (animations.length > 0) {
+    const mixer = new THREE.AnimationMixer(shark);
+    mixer.clipAction(animations[0]).play();
+    mixers.push(mixer);
+  }
+
+});
+
   //Glow Effect Variables
   let hoveredFish = null;
 
 // Render Loop
 function animate() {
   requestAnimationFrame(animate);
+
+  const targetY = 2 - scrollY * 0.05;
+
+  camera.position.y = THREE.MathUtils.lerp(
+  camera.position.y,
+  targetY,
+  0.05
+); // Adjust the multiplier for faster/slower movement
 
   clock.update();
   const delta = clock.getDelta();
